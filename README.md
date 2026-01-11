@@ -1,1 +1,1 @@
-# Loki ai assistant
+# Loki
