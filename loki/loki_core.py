@@ -59,8 +59,18 @@ class Loki:
 
     # Memory layer
     def remember(self, data):
-        self.memory.append(data)
-        print("I will remeber that.")
+        if "my name is" in data:
+            value = data.split("my name is", 1)[1].strip()
+            self.memory.append({"key": "name", "value": value})
+            return f"Alright i will remember that your name is {value}"
+        if "i like" in data:
+            value = data.split("i like", 1)[1].strip()
+            self.memory.append({"key": "likes", "value": value})
+            return f"Got it, you like {value}"
+        self.memory.append({"key": "fact", "value": data})
+        return "Okay. I've stored that."
+
+    # TODO: Make the remember part add it into a JSON file or a SQLite thingy
 
     # Action layer
     def open_app(self, app):
@@ -79,4 +89,11 @@ class Loki:
         return f"The time is: {self.time.hour}:{self.time.minute:02d}"
 
     def recall(self):
-        return f"You said: {self.memory}"
+        if not self.memory:
+            return "I don't remember anything yet."
+
+        lines = []
+        for item in self.memory:
+            lines.append(f"{item['key']}: {item['value']}")
+
+        return "I remember:\n" + "\n".join(lines)
