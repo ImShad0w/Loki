@@ -1,4 +1,7 @@
 from datetime import datetime
+
+# Memory with SQLite
+from memory import Memory
 import subprocess
 
 
@@ -7,12 +10,10 @@ class Loki:
         self.name = "Loki"
         self.time = datetime.now()
         self.user = None
-        self.memory = []
+        self.memory = Memory()
 
     # Input layer
     def hear(self, text):
-        # Append the current message
-
         intent, data = self.parse_intent(text)
         return self.decide(intent, data)
 
@@ -61,16 +62,11 @@ class Loki:
     def remember(self, data):
         if "my name is" in data:
             value = data.split("my name is", 1)[1].strip()
-            self.memory.append({"key": "name", "value": value})
             return f"Alright i will remember that your name is {value}"
         if "i like" in data:
             value = data.split("i like", 1)[1].strip()
-            self.memory.append({"key": "likes", "value": value})
             return f"Got it, you like {value}"
-        self.memory.append({"key": "fact", "value": data})
         return "Okay. I've stored that."
-
-    # TODO: Make the remember part add it into a JSON file or a SQLite thingy
 
     # Action layer
     def open_app(self, app):
