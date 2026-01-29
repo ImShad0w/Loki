@@ -55,17 +55,20 @@ class Loki:
             return self.remember(data)
         if intent == "recall":
             return self.recall()
-
         return "I didn't understand your request."
 
     # Memory layer
     def remember(self, data):
         if "my name is" in data:
             value = data.split("my name is", 1)[1].strip()
+            self.memory.remember("name", value)
             return f"Alright i will remember that your name is {value}"
         if "i like" in data:
             value = data.split("i like", 1)[1].strip()
+            self.memory.remember("user_preference", value)
             return f"Got it, you like {value}"
+
+        self.memory.remember("user_message", data)
         return "Okay. I've stored that."
 
     # Action layer
@@ -88,8 +91,5 @@ class Loki:
         if not self.memory:
             return "I don't remember anything yet."
 
-        lines = []
-        for item in self.memory:
-            lines.append(f"{item['key']}: {item['value']}")
-
-        return "I remember:\n" + "\n".join(lines)
+        print("I remember the following: ")
+        return self.memory.recall()

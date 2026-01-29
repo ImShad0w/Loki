@@ -18,11 +18,15 @@ class Memory:
         """)
         self.conn.commit()
 
-    def remember(self, data):
+    def remember(self, key, value):
         cursor = self.conn.cursor()
-        cursor.execute(
-            "INSERT INTO memory (key, value) VALUES (?, ?)", (data.key, data.value)
-        )
+        cursor.execute("INSERT INTO memory (key, value) VALUES (?, ?)", (key, value))
+        self.conn.commit()
 
     def recall(self):
-    #TODO: Make Loki recall everything in his brain
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT * FROM memory")
+        memory = []
+        for row in cursor:
+            memory.append(f"{row[1]}:{row[2]}")
+        return memory
